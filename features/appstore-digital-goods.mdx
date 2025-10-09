@@ -6,14 +6,14 @@ icon: mobile
 
 ## Introduction
 
-Dodo Payments empowers developers to sell digital goods and services in iOS apps globally, handling complex aspects like tax compliance, currency conversion, and payouts. This comprehensive guide details how to integrate Dodo Payments into your iOS app, specifically for SaaS tools, content subscriptions, and digital utilities.
+Dodo Payments empowers developers to sell digital goods and services in iOS apps, handling complex aspects like tax compliance, currency conversion, and payouts. This comprehensive guide details how to integrate Dodo Payments into your iOS app, specifically for SaaS tools, content subscriptions, and digital utilities.
 
-## 1. Overview
+## Overview
 Dodo Payments serves as your **Merchant of Record (MoR)**, managing critical aspects of your digital business:
 
 ### What We Handle
 - ✅ Tax collection and remittance (VAT, GST, and other regional taxes)
-- ✅ Global payments and local payment methods
+- ✅ Global payments as per policies and local payment methods
 - ✅ Currency conversion and foreign exchange
 - ✅ Chargebacks and fraud prevention
 - ✅ End-customer invoicing and receipts
@@ -28,7 +28,7 @@ Dodo Payments serves as your **Merchant of Record (MoR)**, managing critical asp
 
 ---
 
-## 2. Use Cases
+## Use Cases
 
 ### 📱 Subscriptions
 - Premium content or feature access
@@ -55,7 +55,7 @@ Dodo Payments serves as your **Merchant of Record (MoR)**, managing critical asp
 
 ---
 
-## 3. Integration Flow
+## Integration Flow
 
 You can integrate Dodo Payments into your app using our hosted checkout or in-app browser solution.
 
@@ -76,4 +76,30 @@ flowchart LR
 
 <Card title="Mobile Integration Guide" icon="mobile" href="/developer-resources/mobile-integration">
     For a complete developer walkthrough, explore our Mobile Integration Guide.
+</Card>
+
+## Regional Availability
+
+Dodo Payments enables alternative in-app purchase flows only in App Store regions where Apple explicitly allows external payments, or where a regulator or court order mandates it. As of now, these regions include:
+
+- **United States**: Supported to the extent permitted by current court orders and Apple’s updated guidelines.
+- **European Union (EU) App Store**: Supported via Apple’s EU Alternative Terms and External Purchase Entitlement.
+- **South Korea**: Supported through the StoreKit External Purchase Entitlement for Korea-only binaries.
+
+<Warning>
+Always review and comply with Apple’s region-specific entitlements and App Store Connect requirements before enabling Dodo Payments for any storefront. Using alternative payment flows in unsupported regions may result in app rejection or removal.
+</Warning>
+
+<Note>
+For some business models - such as services or certain categories of content - Apple may not require the use of in-app purchase (IAP) at all. Dodo Payments supports these models as well. Always verify your app’s classification and Apple’s latest guidelines to determine if IAP is mandatory for your use case.
+</Note>
+
+For a detailed breakdown of global policies, legal precedents, and strategic approaches to bypassing App Store fees, see our comprehensive guide:
+
+<Card
+  title="Bypassing App Store & Play Store Fees: A Strategic and Legal Playbook"
+  icon="shield-check"
+  href="/features/bypassing-app-store-fees"
+>
+  Learn where and how you can legally implement alternative payment flows, with up-to-date regional guidance and compliance tips.
 </Card>

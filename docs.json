@@ -72,12 +72,13 @@
                 ]
               },
               "/features/payouts/payout-structure",
-              "miscellaneous/pricing-and-fee-structure",
               "features/payment-methods",
-              "features/mor-vs-pg",
+              "miscellaneous/pricing-and-fee-structure",
               "miscellaneous/list-of-countries-we-accept-payments-from",
               "miscellaneous/merchant-acceptance",
-              "miscellaneous/review-monitoring-policy"
+              "miscellaneous/review-monitoring-policy",
+              "features/mor-vs-pg",
+              "features/bypassing-app-store-fees"
             ]
           },
           {
