@@ -248,6 +248,191 @@ class PaymentViewController: UIViewController {
 <Info>Register your custom URL scheme in Info.plist under URL Types.</Info>
 
 </Tab>
+<Tab title="React Native">
+### React Native Integration
+
+#### Using React Native InAppBrowser
+
+```javascript
+import React from 'react';
+import { View, TouchableOpacity, Text, Alert } from 'react-native';
+import { InAppBrowser } from 'react-native-inappbrowser-reborn';
+
+const PaymentButton = ({ productId, onPaymentComplete }) => {
+  const openPaymentLink = async () => {
+    try {
+      const paymentLink = `https://checkout.dodopayments.com/buy/${productId}?redirect_url=myapp://payment-status`;
+      
+      const result = await InAppBrowser.open(paymentLink, {
+        // iOS options
+        dismissButtonStyle: 'cancel',
+        preferredBarTintColor: '#453AA4',
+        preferredControlTintColor: 'white',
+        readerMode: false,
+        animated: true,
+        modalPresentationStyle: 'fullScreen',
+        modalTransitionStyle: 'coverVertical',
+        modalEnabled: true,
+        enableBarCollapsing: false,
+        // Android options
+        showTitle: true,
+        toolbarColor: '#453AA4',
+        secondaryToolbarColor: 'black',
+        navigationBarColor: 'black',
+        navigationBarDividerColor: 'white',
+        enableUrlBarHiding: true,
+        enableDefaultShare: true,
+        forceCloseOnRedirection: false,
+        animations: {
+          startEnter: 'slide_in_right',
+          startExit: 'slide_out_left',
+          endEnter: 'slide_in_left',
+          endExit: 'slide_out_right'
+        },
+        headers: {
+          'my-custom-header': 'my custom header value'
+        }
+      });
+
+      // Handle payment completion based on result
+      if (result.type === 'dismiss') {
+        // User dismissed the browser
+        console.log('Payment browser dismissed');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to open payment page');
+      console.error('InAppBrowser error:', error);
+    }
+  };
+
+  return (
+    <View style={{ padding: 20 }}>
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#007AFF',
+          padding: 15,
+          borderRadius: 8,
+          alignItems: 'center'
+        }}
+        onPress={openPaymentLink}
+      >
+        <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
+          Pay Now
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export default PaymentButton;
+```
+
+#### Deep Link Handling for Payment Callbacks
+
+```javascript
+// App.js or your main component
+import React, { useEffect } from 'react';
+import { Linking } from 'react-native';
+
+const App = () => {
+  useEffect(() => {
+    // Handle deep links when app is already running
+    const handleDeepLink = (url) => {
+      if (url.includes('payment-status')) {
+        const urlParams = new URLSearchParams(url.split('?')[1]);
+        const paymentId = urlParams.get('payment_id');
+        const status = urlParams.get('status');
+        
+        // Handle payment completion
+        handlePaymentCallback(paymentId, status);
+      }
+    };
+
+    // Listen for deep links
+    const subscription = Linking.addEventListener('url', ({ url }) => {
+      handleDeepLink(url);
+    });
+
+    // Handle deep link if app was opened from a link
+    Linking.getInitialURL().then((url) => {
+      if (url) {
+        handleDeepLink(url);
+      }
+    });
+
+    return () => subscription?.remove();
+  }, []);
+
+  const handlePaymentCallback = (paymentId, status) => {
+    if (status === 'succeeded') {
+      // Navigate to success screen or show success message
+      console.log('Payment successful:', paymentId);
+    } else {
+      // Handle payment failure
+      console.log('Payment failed:', paymentId);
+    }
+  };
+
+  // Your app components...
+};
+
+export default App;
+```
+
+#### Package Dependencies
+
+Add this dependency to your `package.json`:
+
+```json
+{
+  "dependencies": {
+    "react-native-inappbrowser-reborn": "^6.4.0"
+  }
+}
+```
+
+#### Installation Commands
+
+```bash
+# Install InAppBrowser
+npm install react-native-inappbrowser-reborn
+cd ios && pod install
+```
+
+#### Android Configuration
+
+Add to `android/app/src/main/AndroidManifest.xml`:
+
+```xml
+<activity
+  android:name="com.reactnativeinappbrowserreborn.InAppBrowserActivity"
+  android:theme="@style/Theme.AppCompat.Dialog"
+  android:exported="false" />
+```
+
+#### iOS Configuration
+
+Add to `ios/YourApp/Info.plist`:
+
+```xml
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleURLName</key>
+    <string>myapp</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>myapp</string>
+    </array>
+  </dict>
+</array>
+```
+
+<Tip>
+Use InAppBrowser for native browser experience. Handle deep links for payment callbacks.
+</Tip>
+
+</Tab>
 <Tab title="Flutter">
 
 ### Flutter Integration
