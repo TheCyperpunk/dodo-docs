@@ -167,7 +167,11 @@
             "group": "Ingestion Blueprints",
             "tag": "New",
             "pages": [
-              "developer-resources/ingestion-blueprints/llm"
+              "developer-resources/ingestion-blueprints/llm",
+              "developer-resources/ingestion-blueprints/api-gateway",
+              "developer-resources/ingestion-blueprints/object-storage",
+              "developer-resources/ingestion-blueprints/stream",
+              "developer-resources/ingestion-blueprints/time-range"
             ]
           },
           {
