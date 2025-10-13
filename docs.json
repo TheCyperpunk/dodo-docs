@@ -31,6 +31,7 @@
               "features/customer-credit",
               "features/pricing",
               "features/discount-codes",
+              "features/addons",
               {
                 "group": "Transactions",
                 "icon": "credit-card",
