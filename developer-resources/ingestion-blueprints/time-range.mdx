@@ -60,7 +60,7 @@ import { Ingestion, trackTimeRange } from '@dodopayments/ingestion-blueprints';
 
 const ingestion = new Ingestion({
   apiKey: process.env.DODO_PAYMENTS_API_KEY,
-  environment: 'live_mode',
+  environment: 'test_mode',
   eventName: 'container_runtime'
 });
 
@@ -76,7 +76,7 @@ import { Ingestion, trackTimeRange } from '@dodopayments/ingestion-blueprints';
 
 const ingestion = new Ingestion({
   apiKey: process.env.DODO_PAYMENTS_API_KEY,
-  environment: 'live_mode',
+  environment: 'test_mode',
   eventName: 'vm_runtime'
 });
 
