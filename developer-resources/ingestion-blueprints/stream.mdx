@@ -4,6 +4,25 @@ description: "Track streaming data consumption for video, audio, live streams, a
 icon: "tower-broadcast"
 ---
 
+## Use Cases
+
+Explore common scenarios supported by the Stream Blueprint:
+
+<CardGroup cols={2}>
+<Card title="Video Platforms" icon="video">
+Bill customers based on video bandwidth consumption and streaming quality.
+</Card>
+<Card title="Music Streaming" icon="music">
+Track audio streaming usage per user for subscription tiers.
+</Card>
+<Card title="Live Events" icon="signal-stream">
+Monitor live stream consumption and charge for bandwidth usage.
+</Card>
+<Card title="Real-Time Data" icon="wave-pulse">
+Track real-time data transfer for IoT and telemetry applications.
+</Card>
+</CardGroup>
+
 <Info>
 Perfect for video/audio streaming platforms, live streaming services, and real-time data applications.
 </Info>
@@ -83,23 +102,6 @@ Number of bytes consumed in the stream. Required for bandwidth-based billing.
 <ParamField path="metadata" type="object">
 Optional metadata about the stream like stream type, quality, sessionId, etc.
 </ParamField>
-
-## Use Cases
-
-<CardGroup cols={2}>
-<Card title="Video Platforms" icon="video">
-Bill customers based on video bandwidth consumption and streaming quality.
-</Card>
-<Card title="Music Streaming" icon="music">
-Track audio streaming usage per user for subscription tiers.
-</Card>
-<Card title="Live Events" icon="signal-stream">
-Monitor live stream consumption and charge for bandwidth usage.
-</Card>
-<Card title="Real-Time Data" icon="wave-pulse">
-Track real-time data transfer for IoT and telemetry applications.
-</Card>
-</CardGroup>
 
 ## Best Practices
 

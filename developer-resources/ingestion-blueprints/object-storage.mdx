@@ -4,6 +4,25 @@ description: "Track file uploads and storage usage for S3, Google Cloud Storage,
 icon: "box-archive"
 ---
 
+## Use Cases
+
+Explore common scenarios supported by the Object Storage Blueprint:
+
+<CardGroup cols={2}>
+<Card title="File Hosting" icon="folder">
+Bill customers based on total storage usage and upload volume.
+</Card>
+<Card title="Backup Services" icon="shield">
+Track backup data uploads and charge per GB stored.
+</Card>
+<Card title="Media CDN" icon="photo-film">
+Monitor media uploads and bill for storage and bandwidth.
+</Card>
+<Card title="Document Management" icon="file">
+Track document uploads per customer for usage-based pricing.
+</Card>
+</CardGroup>
+
 <Info>
 Perfect for billing based on storage uploads, file hosting, CDN usage, or backup services.
 </Info>
@@ -128,23 +147,6 @@ Number of bytes uploaded. Required for byte-based billing.
 <ParamField path="metadata" type="object">
 Optional metadata about the upload like bucket name, content type, etc.
 </ParamField>
-
-## Use Cases
-
-<CardGroup cols={2}>
-<Card title="File Hosting" icon="folder">
-Bill customers based on total storage usage and upload volume.
-</Card>
-<Card title="Backup Services" icon="shield">
-Track backup data uploads and charge per GB stored.
-</Card>
-<Card title="Media CDN" icon="photo-film">
-Monitor media uploads and bill for storage and bandwidth.
-</Card>
-<Card title="Document Management" icon="file">
-Track document uploads per customer for usage-based pricing.
-</Card>
-</CardGroup>
 
 ## Best Practices
 

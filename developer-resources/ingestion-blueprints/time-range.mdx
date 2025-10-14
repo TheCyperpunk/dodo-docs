@@ -4,6 +4,25 @@ description: "Track resource consumption based on elapsed time for compute, serv
 icon: "clock"
 ---
 
+## Use Cases
+
+Explore common scenarios supported by the Time Range Blueprint:
+
+<CardGroup cols={2}>
+<Card title="Serverless Functions" icon="function">
+Bill based on function execution time and memory usage.
+</Card>
+<Card title="Container Runtime" icon="container-storage">
+Track container running time for usage-based billing.
+</Card>
+<Card title="Compute Instances" icon="server">
+Monitor VM runtime and charge by the minute or hour.
+</Card>
+<Card title="Background Jobs" icon="briefcase">
+Track processing time for data exports, reports, and batch jobs.
+</Card>
+</CardGroup>
+
 <Info>
 Perfect for billing based on compute time, function execution duration, container runtime, or any time-based usage.
 </Info>
@@ -127,23 +146,6 @@ Duration in minutes. Useful for longer-running resources like VMs.
 <ParamField path="metadata" type="object">
 Optional metadata about the resource like CPU, memory, region, etc.
 </ParamField>
-
-## Use Cases
-
-<CardGroup cols={2}>
-<Card title="Serverless Functions" icon="function">
-Bill based on function execution time and memory usage.
-</Card>
-<Card title="Container Runtime" icon="container-storage">
-Track container running time for usage-based billing.
-</Card>
-<Card title="Compute Instances" icon="server">
-Monitor VM runtime and charge by the minute or hour.
-</Card>
-<Card title="Background Jobs" icon="briefcase">
-Track processing time for data exports, reports, and batch jobs.
-</Card>
-</CardGroup>
 
 ## Best Practices
 

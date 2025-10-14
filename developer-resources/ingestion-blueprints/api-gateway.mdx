@@ -4,6 +4,28 @@ description: "Track API calls and gateway-level usage for billing. Perfect for A
 icon: "cloud"
 ---
 
+
+
+
+## Use Cases
+
+Explore common scenarios supported by the API Gateway Blueprint:
+
+<CardGroup cols={2}>
+<Card title="API-as-a-Service" icon="server">
+Track usage per customer for API platforms and charge based on number of calls.
+</Card>
+<Card title="Rate Limiting" icon="gauge">
+Monitor API usage patterns and implement usage-based rate limiting.
+</Card>
+<Card title="Performance Monitoring" icon="chart-line">
+Track response times and error rates alongside billing data.
+</Card>
+<Card title="Multi-Tenant SaaS" icon="users">
+Bill customers based on their API consumption across different endpoints.
+</Card>
+</CardGroup>
+
 <Info>
 Ideal for tracking API endpoint usage, rate limiting, and implementing usage-based API billing.
 </Info>
@@ -165,23 +187,6 @@ Maximum number of events before auto-flush. Default: `100`.
 <ParamField path="flushInterval" type="number">
 Auto-flush interval in milliseconds. Default: `5000` (5 seconds).
 </ParamField>
-
-## Use Cases
-
-<CardGroup cols={2}>
-<Card title="API-as-a-Service" icon="server">
-Track usage per customer for API platforms and charge based on number of calls.
-</Card>
-<Card title="Rate Limiting" icon="gauge">
-Monitor API usage patterns and implement usage-based rate limiting.
-</Card>
-<Card title="Performance Monitoring" icon="chart-line">
-Track response times and error rates alongside billing data.
-</Card>
-<Card title="Multi-Tenant SaaS" icon="users">
-Bill customers based on their API consumption across different endpoints.
-</Card>
-</CardGroup>
 
 ## Best Practices
 
