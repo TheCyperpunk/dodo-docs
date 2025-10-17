@@ -38,16 +38,27 @@
               {
                 "group": "Usage Based Billing",
                 "icon": "arrow-trend-up",
+                "tag": "NEW",
                 "pages": [
                   "features/usage-based-billing/introduction",
                   "features/usage-based-billing/meters",
                   "features/usage-based-billing/event-ingestion",
-                  "features/usage-based-billing/billing",
-                  "features/usage-based-billing/ingestion-blueprints"
+                  "features/customer-credit",
+                  {
+                    "group": "Ingestion Blueprints",
+                    "icon": "copy",
+                    "pages": [
+                      "features/usage-based-billing/ingestion-blueprints",
+                      "developer-resources/ingestion-blueprints/llm",
+                      "developer-resources/ingestion-blueprints/api-gateway",
+                      "developer-resources/ingestion-blueprints/object-storage",
+                      "developer-resources/ingestion-blueprints/stream",
+                      "developer-resources/ingestion-blueprints/time-range"
+                    ]
+                  }
                 ]
               },
               "features/customer-wallet",
-              "features/customer-credit",
               {
                 "group": "Discounts & Pricing",
                 "icon": "dollar-sign",
@@ -185,17 +196,6 @@
               "developer-resources/usage-based-billing-build-ai-image-generator",
               "developer-resources/seat-based-pricing",
               "developer-resources/build-an-ai-chat-app-with-usage-based-billing"
-            ]
-          },
-          {
-            "group": "Ingestion Blueprints",
-            "tag": "New",
-            "pages": [
-              "developer-resources/ingestion-blueprints/llm",
-              "developer-resources/ingestion-blueprints/api-gateway",
-              "developer-resources/ingestion-blueprints/object-storage",
-              "developer-resources/ingestion-blueprints/stream",
-              "developer-resources/ingestion-blueprints/time-range"
             ]
           },
           {

@@ -1,116 +1,147 @@
 ---
 sidebarTitle: "Meters"
 title: "Meters"
-description: "Define how events are aggregated and filtered into billable quantities."
+description: "Transform raw usage events into billable quantities with aggregation and filtering."
 icon: "sliders"
-tag: BETA
 ---
-
-Meters turn raw events into measurable units used for billing.
-
-<Card title="API - Create Meter" icon="code" href="/api-reference/meters/create-meter">
-Create meters programmatically and test requests.
-</Card>
-
-## What Are Meters?
-
-Use meters to transform raw events into quantities you can bill for. You define the matching rules and the rollup method, and usage is tracked per customer and time period.
-
-- **CI build time**: Match `name = build_completed`; sum `metadata.minutes`.
-- **Emails sent**: Match `name = email_sent`; count events.
-- **Image processing**: Match `name = image_processed`; sum `metadata.bytes_processed`.
-
 <Info>
-Event names and metadata keys are case‑sensitive. Reference metadata keys directly in filters and aggregations (no `metadata.` prefix).
+Meters convert raw events into billable quantities. They filter events and apply aggregation functions (Count, Sum, Max, Last) to calculate usage per customer.
 </Info>
 
-## Create a Meter
+<Frame>
+<img src="/images/usage-based/UBB-2.png" alt="Meter creation interface showing event name, aggregation type, and filtering options" />
+</Frame>
+
+## API Resources
+
+<AccordionGroup>
+<Accordion title="View Meter API References">
+<CardGroup cols={2}>
+<Card title="Create Meter" icon="plus" href="/api-reference/meters/create-meter">
+Create meters programmatically via API.
+</Card>
+
+<Card title="List Meters" icon="list" href="/api-reference/meters/get-meters">
+Retrieve all meters in your account.
+</Card>
+
+<Card title="Get Meter" icon="eye" href="/api-reference/meters/retrieve-meter">
+Fetch details for a specific meter by ID.
+</Card>
+
+<Card title="Archive Meter" icon="arrow-rotate-right" href="/api-reference/meters/archive-meter">
+Archive a meter to stop tracking usage.
+</Card>
+
+<Card title="Unarchive Meter" icon="arrow-rotate-left" href="/api-reference/meters/unarchive-meter">
+Restore an archived meter to resume tracking.
+</Card>
+</CardGroup>
+</Accordion>
+</AccordionGroup>
+
+## Creating a Meter
 
 <Steps>
-<Step title="Configure basic information">
-<ParamField path="Meter Name" type="string" required>Pick a short, descriptive label (e.g., Build minutes, Emails).</ParamField>
-<ParamField path="Description" type="string">Clarify what you measure and how it’s aggregated.</ParamField>
-<ParamField path="Event Name" type="string" required>Exact event name you emit.</ParamField>
-<Info>Event names must match exactly, including case.</Info>
+<Step title="Basic Information">
+<ParamField path="Meter Name" type="string" required>
+Descriptive name (e.g., "API Requests", "Token Usage")
+</ParamField>
+
+<ParamField path="Event Name" type="string" required>
+Exact event name to match (case-sensitive). Examples: `api.call`, `image.generated`
+</ParamField>
 </Step>
 
 <Step title="Aggregation">
 <ParamField path="Aggregation Type" type="string" required>
-<Tabs>
-<Tab title="Count">Count matching events. No property required.</Tab>
-<Tab title="Sum">Add up a numeric property (minutes, bytes, tokens).</Tab>
-<Tab title="Average">Compute the mean of a numeric property.</Tab>
-<Tab title="Minimum">Smallest observed value of a numeric property.</Tab>
-<Tab title="Maximum">Largest observed value of a numeric property.</Tab>
-<Tab title="Unique">Distinct count of a property (e.g., unique userId).</Tab>
-</Tabs>
+Choose how events are aggregated:
+
+- **Count**: Total number of events (API calls, uploads)
+- **Sum**: Add numeric values (tokens, bytes)
+- **Max**: Highest value in period (peak users)
+- **Last**: Most recent value
 </ParamField>
 
 <ParamField path="Over Property" type="string">
-Event metadata key to aggregate over. Required for Sum, Average, Minimum, Maximum, and Unique. Not used for Count.
+Metadata key to aggregate (required for all types except Count). Examples: `tokens`, `bytes`, `duration_ms`
 </ParamField>
 
 <ParamField path="Measurement Unit" type="string" required>
-Shown on invoices and charts (e.g., calls, tiles, minutes, GB).
+Unit label for invoices. Examples: `calls`, `tokens`, `GB`, `hours`
 </ParamField>
 </Step>
 
-<Step title="Optional: Event filtering">
-Limit which events contribute to the meter.
+<Step title="Filtering (Optional)">
+<Frame>
+<img src="/images/usage-based/UBB-3.png" alt="Event filtering" />
+</Frame>
 
-<Tabs>
-<Tab title="AND logic">All conditions must match (e.g., plan = pro AND method = POST).</Tab>
-<Tab title="OR logic">Any condition may match (e.g., endpoint contains /v2 OR /v3).</Tab>
-</Tabs>
+Add conditions to filter which events are counted:
+- **AND logic**: All conditions must match
+- **OR logic**: Any condition can match
 
-<Steps>
-<Step title="Add condition">Click Add condition.</Step>
-<Step title="Property key">Key from event metadata.</Step>
-<Step title="Comparator">Equals, Not equals, Greater Than, Greater Than or Equals, Less Than, Less Than or Equals, Contains, Does Not Contain.</Step>
-<Step title="Comparison value">Target to compare against.</Step>
-<Step title="Groups">Use groups to build complex logic.</Step>
-</Steps>
+**Comparators**: equals, not equals, greater than, less than, contains
 
-<Warning>If a filtered property is missing, that event will not match the meter.</Warning>
+Enable filtering, choose logic, add conditions with property key, comparator, and value.
 </Step>
 
-<Step title="Create Meter">Review and create the meter.</Step>
+<Step title="Create">
+Review configuration and click **Create Meter**.
+</Step>
 </Steps>
 
-## Filters
+## Viewing Analytics
 
-Filters are one or more clauses combined with logical connectors.
+<Frame>
+<img src="/images/usage-based/UBB-1.png" alt="Meter analytics" />
+</Frame>
 
-- **Clause**: A single condition an event must satisfy.
-- **Property**: Event field to evaluate. Use metadata keys directly (e.g., `minutes`).
-- **Operator**: Equals, Not equals, Greater Than, Greater Than or Equals, Less Than, Less Than or Equals, Contains, Does Not Contain.
-- **Value parsing**: Values are interpreted in this order: number → boolean (`true`/`false`) → string.
-- **Conjunctions**: Use AND when all clauses must hold; OR when any clause can match.
-
-## Aggregation
-
-Choose how to roll up values for events that pass the filter:
-
-- **Count**: Number of matching events.
-- **Sum**: Sum of a numeric property.
-- **Average**: Mean of a numeric property.
-- **Minimum**: Smallest value of a numeric property.
-- **Maximum**: Largest value of a numeric property.
-- **Unique**: Count of distinct values of a property.
-
-<Tip>
-When aggregating over a property, make sure it’s present and numeric when required. For Unique, choose the property to deduplicate (e.g., `userId`).
-</Tip>
+Your meter dashboard shows:
+- **Overview**: Total usage and usage chart
+- **Events**: Individual events received
+- **Customers**: Per-customer usage and charges
 
 ## Troubleshooting
 
 <AccordionGroup>
-<Accordion title="Aggregation not working as expected">
-Confirm the Over Property matches an existing metadata key, values are numeric (not strings), and required fields are present on every event.
+<Accordion title="Events not appearing">
+- Event name must match exactly (case-sensitive)
+- Check meter filters aren't excluding events
+- Verify customer IDs exist
+- Temporarily disable filters to test
 </Accordion>
-<Accordion title="Filtering not working">
-Verify property names and cases, pick operators suited to the data type, and ensure the event actually includes the filtered fields.
+
+<Accordion title="Aggregation not working">
+- Verify Over Property matches metadata key exactly
+- Use numbers, not strings: `tokens: 150` not `"150"`
+- Include required properties in all events
+</Accordion>
+
+<Accordion title="Filters not working">
+- Match case exactly
+- Use correct operators for data type
+- Ensure events include filtered properties
+</Accordion>
+
+<Accordion title="Wrong usage totals">
+- Check Events tab to count actual events received
+- Verify aggregation type (Count vs Sum)
+- Ensure values are numeric for Sum/Max
 </Accordion>
 </AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+
+<Card title="Send Events" icon="bolt" href="/features/usage-based-billing/event-ingestion">
+Start sending usage events from your application to your meters.
+</Card>
+
+<Card title="View Blueprints" icon="copy" href="/features/usage-based-billing/ingestion-blueprints">
+Use ready-made meter configurations for common use cases.
+</Card>
+</CardGroup>
 
 
