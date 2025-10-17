@@ -5,7 +5,7 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 1.55.4
+  version: 1.55.7
 servers:
   - url: https://test.dodopayments.com/
     description: Test Mode Server Host
@@ -13224,13 +13224,19 @@ components:
       type: object
       title: New Customer
       required:
-        - name
         - email
       properties:
         email:
           type: string
+          description: Email is required for creating a new customer
         name:
-          type: string
+          type:
+            - string
+            - 'null'
+          description: |-
+            Optional full name of the customer. If provided during session creation,
+            it is persisted and becomes immutable for the session. If omitted here,
+            it can be provided later via the confirm API.
         phone_number:
           type:
             - string
