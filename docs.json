@@ -99,16 +99,7 @@
           {
             "group": "Merchant of Record",
             "pages": [
-              {
-                "group": "Verification",
-                "icon": "id-card",
-                "pages": [
-                  "miscellaneous/verification-process",
-                  "features/payouts/compliance",
-                  "miscellaneous/tax-forms",
-                  "features/payouts/link-bank-account"
-                ]
-              },
+              "miscellaneous/verification-process",
               "/features/payouts/payout-structure",
               "features/payment-methods",
               "miscellaneous/pricing-and-fee-structure",
@@ -897,6 +888,18 @@
     {
       "source": "/features/gtm-tools/feature-prioritization-tool",
       "destination": "/miscellaneous/gtm-tools/feature-prioritization-tool"
+    },
+    {
+      "source": "/features/payouts/compliance",
+      "destination": "/miscellaneous/verification-process"
+    },
+    {
+      "source": "/miscellaneous/tax-forms",
+      "destination": "/miscellaneous/verification-process"
+    },
+    {
+      "source": "/features/payouts/link-bank-account",
+      "destination": "/miscellaneous/verification-process"
     }
   ]
 }
