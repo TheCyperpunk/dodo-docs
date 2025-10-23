@@ -276,7 +276,25 @@ NotificationCenter.default.addObserver(self, selector: #selector(handlePaymentCo
 <Tab title="React Native">
 ### React Native Integration
 
-#### InAppBrowser Implementation
+Dodo Payments provides **two approaches** for React Native integration. Choose based on your needs:
+
+| Feature | Approach 1: Checkout Links | Approach 2: SDK |
+|---------|---------------------------|-----------------|
+| **Installation** | `react-native-inappbrowser-reborn` | `dodopayments-react-native-sdk` |
+| **UI Experience** | Browser-based hosted page | Native payment sheet |
+| **Customization** | Limited (Dodo's UI) | Extensive (colors, themes, shapes) |
+| **Deep Links** | Required for callbacks | Not required |
+| **Backend Returns** | `checkout_url` | `client_secret` |
+| **Result Handling** | URL callbacks | Direct SDK response |
+| **Best For** | Quick setup, minimal code | Production apps, custom branding |
+
+---
+
+#### Approach 1: Using Checkout Links (InAppBrowser)
+
+Open Dodo's hosted checkout page in an in-app browser.
+
+##### InAppBrowser Implementation
 
 ```javascript
 import React from 'react';
@@ -461,6 +479,448 @@ Add to `ios/YourApp/Info.plist`:
 <Tip>
 Use InAppBrowser for native browser experience. Handle deep links for payment callbacks.
 </Tip>
+
+---
+
+#### Approach 2: Using React Native SDK (BETA)
+
+Present native payment UI directly in your app using the Dodo Payments React Native SDK.
+
+<Note>
+**Recommended for production apps** - Provides native payment experience with full customization control.
+</Note>
+
+##### Prerequisites
+
+Before using the SDK, ensure you have:
+
+- **Publishable Key**: Get from [Dodo Payments Dashboard](https://app.dodopayments.com/developer/others)
+- **Backend Server**: To create payment intents securely
+- **Product IDs**: Configured in your Dodo Payments dashboard
+
+<Warning>
+**Security**: Use **publishable key** in your app, **never** the secret API key.
+</Warning>
+
+##### Installation & Setup
+
+```bash
+# Install the SDK
+npm install dodopayments-react-native-sdk
+# or
+yarn add dodopayments-react-native-sdk
+
+# iOS only - install pods
+cd ios && pod install && cd ..
+```
+
+**Package.json dependency:**
+```json
+{
+  "dependencies": {
+    "dodopayments-react-native-sdk": "^0.3.1"
+  }
+}
+```
+
+**Minimum Requirements:**
+- iOS 13.0+
+- Android API 24+ (Android 7.0)
+
+##### Step 1: Wrap Your App with DodoPaymentsProvider
+
+The provider must wrap all components that use payment features.
+
+```tsx
+// App.tsx
+import React from 'react';
+import { DodoPaymentsProvider } from 'dodopayments-react-native-sdk';
+import PaymentScreen from './PaymentScreen';
+
+const PUBLISHABLE_KEY = process.env.DODO_PUBLISHABLE_KEY;
+
+function App() {
+  return (
+    <DodoPaymentsProvider publishableKey={PUBLISHABLE_KEY}>
+      {/* Your app components */}
+      <PaymentScreen />
+    </DodoPaymentsProvider>
+  );
+}
+
+export default App;
+```
+
+**Setup environment variables:**
+
+Create `.env` file in your project root:
+```bash
+# .env
+DODO_PUBLISHABLE_KEY=your_publishable_key_here
+```
+
+<Note>
+The publishable key initializes the SDK on the client side. Get it from your [Dodo Payments Dashboard](https://app.dodopayments.com/developer/others).
+</Note>
+
+##### Step 2: Create Payment Intent on Backend
+
+<Warning>
+**Critical**: Payment intents MUST be created on your backend server, never in the mobile app. This protects your secret API key.
+</Warning>
+
+Your backend needs to call the Dodo Payments API to create a payment intent and return the `client_secret`.
+
+**Backend Example (Node.js/Express):**
+
+```javascript
+// server.js
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+app.post('/create-payment-intent', async (req, res) => {
+  try {
+    const response = await fetch('https://test.dodopayments.com/payments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Use SECRET API key here
+        'Authorization': `Bearer ${process.env.DODOPAYMENTS_TEST_API_KEY}`
+      },
+      body: JSON.stringify({
+        product_cart: [
+          {
+            product_id: 'pdt_xxxxx', // Your product ID from dashboard
+            quantity: 1
+          }
+        ],
+        customer: {
+          email: req.body.email || 'customer@example.com',
+          name: req.body.name || 'Customer Name'
+        },
+        billing: {
+          city: 'San Francisco',
+          country: 'US',
+          state: 'California',
+          street: '123 Main St',
+          zipcode: '94107'
+        }
+      })
+    });
+
+    const paymentIntent = await response.json();
+    
+    // Return only the client_secret to mobile app
+    res.json({
+      clientSecret: paymentIntent.client_secret
+    });
+  } catch (error) {
+    console.error('Payment intent creation failed:', error);
+    res.status(500).json({ error: 'Failed to create payment intent' });
+  }
+});
+
+app.listen(5252, () => {
+  console.log('Server running on port 5252');
+});
+```
+
+**Backend Environment Variables (.env):**
+```bash
+# server/.env
+DODOPAYMENTS_TEST_API_KEY=your_secret_api_key_here  # Keep this SECRET!
+```
+
+<Note>
+**Security Architecture**:
+- Mobile App uses **publishable key** - safe to expose
+- Backend uses **secret API key** - must be kept private
+- Mobile app only receives `client_secret` (one-time use token)
+</Note>
+
+##### Step 3: Implement Payment Screen
+
+Use the `useCheckout` hook to present the payment sheet.
+
+```tsx
+// PaymentScreen.tsx
+import React, { useState } from 'react';
+import { View, Button, Alert, ActivityIndicator, Platform } from 'react-native';
+import { useCheckout } from 'dodopayments-react-native-sdk';
+
+const PaymentScreen = () => {
+  const { initPaymentSession, presentPaymentSheet } = useCheckout();
+  const [loading, setLoading] = useState(false);
+
+  // Platform-specific backend URLs
+  // iOS Simulator: use localhost
+  // Android Emulator: use 10.0.2.2 (maps to host machine's localhost)
+  const BACKEND_URL = Platform.OS === 'ios' 
+    ? 'http://localhost:5252' 
+    : 'http://10.0.2.2:5252';
+
+  const handlePayment = async () => {
+    setLoading(true);
+    
+    try {
+      // Step 1: Get client secret from your backend
+      console.log('Fetching client secret from backend...');
+      const response = await fetch(`${BACKEND_URL}/create-payment-intent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: 'customer@example.com',
+          name: 'John Doe'
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create payment intent');
+      }
+      
+      const { clientSecret } = await response.json();
+      console.log('Client secret received');
+
+      // Step 2: Initialize payment session with the SDK
+      console.log('Initializing payment session...');
+      const sessionParams = await initPaymentSession({ clientSecret });
+      
+      if (!sessionParams) {
+        throw new Error('Failed to initialize payment session');
+      }
+
+      // Step 3: Present payment sheet to user
+      console.log('Presenting payment sheet...');
+      const result = await presentPaymentSheet(sessionParams);
+      console.log('Payment result:', result);
+
+      // Step 4: Handle payment result
+      switch (result?.status) {
+        case 'succeeded':
+          Alert.alert(
+            'Success! 🎉', 
+            'Your payment was completed successfully!',
+            [{ text: 'OK', onPress: () => {/* Navigate to success screen */} }]
+          );
+          break;
+          
+        case 'failed':
+          Alert.alert(
+            'Payment Failed', 
+            result?.message || 'Something went wrong. Please try again.'
+          );
+          break;
+          
+        case 'cancelled':
+          Alert.alert(
+            'Payment Cancelled', 
+            'You cancelled the payment. Your cart is still active.'
+          );
+          break;
+          
+        default:
+          console.log('Unknown payment status:', result?.status);
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      Alert.alert(
+        'Error', 
+        'Failed to process payment. Please check your connection and try again.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
+      {loading ? (
+        <ActivityIndicator size="large" color="#007AFF" />
+      ) : (
+        <Button 
+          title="Pay Now" 
+          onPress={handlePayment}
+          color="#007AFF"
+        />
+      )}
+    </View>
+  );
+};
+
+export default PaymentScreen;
+```
+
+##### Step 4: Customize Appearance (Optional)
+
+The SDK supports extensive customization to match your brand.
+
+```tsx
+// Customize the payment sheet appearance
+const handlePayment = async () => {
+  // ... fetch clientSecret ...
+  
+  const sessionParams = await initPaymentSession({ clientSecret });
+
+  // Add custom appearance configuration
+  const customizedParams = {
+    ...sessionParams,
+    configuration: {
+      appearance: {
+        themes: 'light', // 'light' or 'dark'
+        primaryButton: {
+          colors: {
+            light: {
+              background: '#007AFF',           // Button background
+              componentBorder: '#007AFF',      // Border color
+              placeholderText: '#999999'       // Placeholder text
+            },
+            dark: {
+              background: '#0A84FF',           // Dark mode button
+              componentBorder: '#0A84FF',      // Dark mode border
+              placeholderText: '#EBEBF5'       // Dark mode placeholder
+            }
+          },
+          shapes: {
+            borderRadius: 8,    // Rounded corners
+            borderWidth: 1      // Border thickness
+          }
+        }
+      },
+      mode: 'test' // Use 'live' for production
+    }
+  };
+
+  const result = await presentPaymentSheet(customizedParams);
+  // ... handle result ...
+};
+```
+
+##### Handle Payment Results
+
+The SDK returns a result object with status and message.
+
+```tsx
+interface PaymentResult {
+  status: 'succeeded' | 'failed' | 'cancelled';
+  message?: string;
+}
+```
+
+**Result Status Guide:**
+
+| Status | What it Means | What to Do |
+|--------|---------------|------------|
+| `succeeded` | Payment completed successfully | Show confirmation, update order status, navigate to success screen |
+| `failed` | Payment processing failed | Display error message, allow user to retry, log error for debugging |
+| `cancelled` | User closed payment sheet | Return to checkout, keep cart intact, no error needed |
+
+##### Testing Your Integration
+
+Use Dodo's test cards during development:
+
+**Test Card Numbers:**
+
+| Card Type | Card Number | Result |
+|-----------|-------------|--------|
+| **Success** | `4242 4242 4242 4242` | Payment succeeds |
+| **Decline** | `4000 0000 0000 0002` | Payment fails (card declined) |
+
+**Test Card Details:**
+- **Expiry**: Any future date (e.g., `12/25`)
+- **CVV**: Any 3 digits (e.g., `123`)
+- **ZIP**: Any valid ZIP code (e.g., `12345`)
+
+**Testing Checklist:**
+
+- ✅ **Successful payment flow** - Use test card 4242
+- ✅ **Failed payment handling** - Use decline card
+- ✅ **User cancellation** - Close payment sheet
+- ✅ **Network errors** - Turn off backend server
+- ✅ **iOS and Android** - Test both platforms
+- ✅ **Light and dark mode** - Verify appearance
+
+<Tip>
+Always test in **test mode** during development. Switch to **live mode** only when ready for production.
+</Tip>
+
+##### Platform-Specific Configuration
+
+**iOS Configuration:**
+
+No additional configuration needed! The SDK handles everything automatically.
+
+- **Minimum Version**: iOS 13.0+
+- **Auto-configuration**: Pods are auto-linked
+
+**Android Configuration:**
+
+Minimal configuration required.
+
+- **Minimum SDK**: API 24 (Android 7.0+)
+- **Target SDK**: API 34 recommended
+
+Add to `android/app/build.gradle` if not already present:
+
+```gradle
+android {
+    compileSdkVersion 34
+    
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 34
+    }
+}
+```
+
+##### Troubleshooting Common Issues
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| **"Invalid publishable key"** | Wrong key or not set in env | Verify `.env` file has correct `DODO_PUBLISHABLE_KEY` from dashboard |
+| **"Payment intent creation failed"** | Backend error or wrong API key | Check server logs, verify `DODOPAYMENTS_TEST_API_KEY` in backend `.env` |
+| **"Network request failed"** | Backend not running | Start backend server: `node server.js` on port 5252 |
+| **Payment sheet doesn't open** | Invalid `client_secret` | Check backend response format, ensure `clientSecret` is returned |
+| **iOS: "Cannot connect to localhost"** | iOS networking issue | Use `http://localhost:5252` for iOS Simulator |
+| **Android: "Connection refused"** | Android emulator networking | Use `http://10.0.2.2:5252` instead of localhost for Android |
+| **"Missing publishable key"** | Provider not wrapping app | Ensure `<DodoPaymentsProvider>` wraps all payment components |
+| **Payment succeeds but result is undefined** | SDK version mismatch | Update to latest SDK version: `npm install dodopayments-react-native-sdk@latest` |
+
+##### Complete Working Example
+
+<Card 
+  title="Full React Native SDK Demo" 
+  icon="github" 
+  href="https://github.com/dodopayments/dodopayments-react-native-demo"
+>
+  Complete working React Native app with payment flow, success screens, error handling, and full customization examples. Clone and run locally to see the SDK in action.
+</Card>
+
+---
+
+### Choosing the Right Approach
+
+<CardGroup cols={2}>
+<Card title="Use Checkout Links" icon="link">
+  **When to choose:**
+  - Quick integration needed
+  - Minimal code preferred  
+  - Don't need UI customization
+  - Already have deep links setup
+  - Comfortable with browser-based flow
+</Card>
+
+<Card title="Use React Native SDK" icon="mobile">
+  **When to choose:**
+  - Building production app
+  - Want native app experience
+  - Need custom branding/styling
+  - Want full UX control
+  - Prefer direct result handling
+  - No deep links needed
+</Card>
+</CardGroup>
 
 </Tab>
 <Tab title="Flutter">
