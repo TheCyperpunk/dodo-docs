@@ -228,12 +228,11 @@
           {
             "group": "Integration Guides",
             "pages": [
-              "developer-resources/checkout-session",
-              "developer-resources/usage-based-billing-guide",
               "developer-resources/integration-guide",
               "developer-resources/subscription-integration-guide",
+              "developer-resources/usage-based-billing-guide",
+              "developer-resources/checkout-session",
               "developer-resources/subscription-upgrade-downgrade",
-              "developer-resources/integration-tutorial",
               "developer-resources/overlay-checkout",
               "developer-resources/mobile-integration"
             ]
