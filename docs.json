@@ -11,8 +11,8 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Setup & Features",
-        "icon": "rocket",
+        "tab": "Documentation",
+        "icon": "book",
         "groups": [
           {
             "group": "Getting Started",
@@ -121,6 +121,66 @@
             ]
           },
           {
+            "group": "Integrate",
+            "pages": [
+              {
+                "group": "SDKs",
+                "icon": "code",
+                "pages": [
+                  "developer-resources/dodo-payments-sdks",
+                  "developer-resources/react-native-integration",
+                  "developer-resources/supabase-boilerplate"
+                ]
+              },
+              {
+                "group": "Framework Adaptors",
+                "icon": "frame",
+                "pages": [
+                  "developer-resources/nextjs-adaptor",
+                  "developer-resources/nuxt-adaptor",
+                  "developer-resources/better-auth-adaptor",
+                  "developer-resources/express-adaptor",
+                  "developer-resources/astro-adaptor",
+                  "developer-resources/sveltekit-adaptor",
+                  "developer-resources/hono-adaptor",
+                  "developer-resources/remix-adaptor",
+                  "developer-resources/tanstack-adaptor",
+                  "developer-resources/fastify-adaptor",
+                  "developer-resources/convex-component"
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "icon": "webhook",
+                "pages": [
+                  "developer-resources/webhooks",
+                  "developer-resources/webhooks/intents/webhook-events-guide",
+                  {
+                    "group": "Webhook Payloads",
+                    "icon": "code",
+                    "pages": [
+                      "developer-resources/webhooks/intents/payment",
+                      "developer-resources/webhooks/intents/subscription",
+                      "developer-resources/webhooks/intents/refund",
+                      "developer-resources/webhooks/intents/dispute",
+                      "developer-resources/webhooks/intents/license-key"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Testing & Demo Tools",
+                "icon": "flask",
+                "pages": [
+                  "miscellaneous/test-mode-vs-live-mode",
+                  "miscellaneous/testing-process",
+                  "features/atlas-demo-website"
+                ]
+              },
+              "developer-resources/mcp-server"
+            ]
+          },
+          {
             "group": "Merchant of Record",
             "pages": [
               "miscellaneous/verification-process",
@@ -162,15 +222,9 @@
         ]
       },
       {
-        "tab": "Developer Resources",
-        "icon": "code",
+        "tab": "Guides",
+        "icon": "compass",
         "groups": [
-          {
-            "group": "Developer Resources",
-            "pages": [
-              "developer-resources/introduction"
-            ]
-          },
           {
             "group": "Integration Guides",
             "pages": [
@@ -181,28 +235,10 @@
               "developer-resources/subscription-upgrade-downgrade",
               "developer-resources/integration-tutorial",
               "developer-resources/overlay-checkout",
-              "developer-resources/mobile-integration",
-              "developer-resources/mcp-server"
+              "developer-resources/mobile-integration"
             ]
           },
-          {
-            "group": "Webhooks",
-            "pages": [
-              "developer-resources/webhooks",
-              "developer-resources/webhooks/intents/webhook-events-guide",
-              {
-                "group": "Webhook Payloads",
-                "icon": "code",
-                "pages": [
-                  "developer-resources/webhooks/intents/payment",
-                  "developer-resources/webhooks/intents/subscription",
-                  "developer-resources/webhooks/intents/refund",
-                  "developer-resources/webhooks/intents/dispute",
-                  "developer-resources/webhooks/intents/license-key"
-                ]
-              }
-            ]
-          },
+          
           {
             "group": "Cookbooks",
             "tag": "New",
@@ -210,38 +246,6 @@
               "developer-resources/usage-based-billing-build-ai-image-generator",
               "developer-resources/seat-based-pricing",
               "developer-resources/build-an-ai-chat-app-with-usage-based-billing"
-            ]
-          },
-          {
-            "group": "Testing & Demo Tools",
-            "pages": [
-              "miscellaneous/test-mode-vs-live-mode",
-              "miscellaneous/testing-process",
-              "features/atlas-demo-website"
-            ]
-          },
-          {
-            "group": "SDKs",
-            "pages": [
-              "developer-resources/dodo-payments-sdks",
-              "developer-resources/react-native-integration",
-              "developer-resources/supabase-boilerplate"
-            ]
-          },
-          {
-            "group": "Framework Adaptors",
-            "pages": [
-              "developer-resources/nextjs-adaptor",
-              "developer-resources/nuxt-adaptor",
-              "developer-resources/better-auth-adaptor",
-              "developer-resources/express-adaptor",
-              "developer-resources/astro-adaptor",
-              "developer-resources/sveltekit-adaptor",
-              "developer-resources/hono-adaptor",
-              "developer-resources/remix-adaptor",
-              "developer-resources/tanstack-adaptor",
-              "developer-resources/fastify-adaptor",
-              "developer-resources/convex-component"
             ]
           }
         ]
