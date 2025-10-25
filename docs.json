@@ -82,7 +82,7 @@
                 "icon": "gift",
                 "pages": [
                   "features/license-keys",
-                  "/features/digital-product-delivery"
+                  "features/digital-product-delivery"
                 ]
               },
               {
@@ -90,7 +90,7 @@
                 "icon": "wallet",
                 "pages": [
                   "features/account-summary-payout-wallet",
-                  "/features/payouts/payout-structure"
+                  "features/payouts/payout-structure"
                 ]
               },
               {
