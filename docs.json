@@ -237,7 +237,12 @@
               "developer-resources/mobile-integration"
             ]
           },
-          
+          {
+            "group": "Setup Guides",
+            "pages": [
+              "guides/storefront-digital-delivery-guide"
+            ]
+          },
           {
             "group": "Cookbooks",
             "tag": "New",
